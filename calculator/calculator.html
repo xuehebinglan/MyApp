@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Calculator</title>
+	<style>
+		#calculator {
+			width:300px;
+			height:430px;
+			margin:0 auto;
+			border: 1px solid white;
+			border-radius:2em;
+			background-color: #b2be7e;
+		}
+		#screen {
+			width:290px;
+			height:90px;
+			margin:10px 5px 0 5px;
+			border-bottom: 1px solid #b2be7e;
+			/*border: 1px solid black;*/
+		}
+		#logo {
+			margin-top: 12px;
+			text-align: center;
+		}
+		#show {
+			margin: 10px auto;
+			width:80%;
+			height:50px;
+			text-align: center;
+			line-height: 50px;
+			background-color: #e1eed2;
+		}
+		#button-panel {
+			width:250px;
+			height:290px;
+			margin-top:10px;
+			margin-left:30px;
+			/*border: 1px solid black;*/
+		}
+		.c-button {
+			float:left;
+			margin:4px;
+			width:50px;
+			height:50px;
+			text-align: center;
+			line-height: 50px;
+			border: 1px solid #b2be7e;
+			background-color: white;
+		}
+	</style>
+</head>
+<body>
+	<div id="calculator">
+		<div id="screen">
+			<div id="logo">By Xuehebinglan</div>
+			<div id="show"></div>
+		</div>
+		<div id="button-panel">
+			<div class="c-button">AC</div>
+			<div class="c-button">CE</div>
+			<div class="c-button">%</div>
+			<div class="c-button">/</div>
+			<div class="c-button">7</div>
+			<div class="c-button">8</div>
+			<div class="c-button">9</div>
+			<div class="c-button">*</div>
+			<div class="c-button">4</div>
+			<div class="c-button">5</div>
+			<div class="c-button">6</div>
+			<div class="c-button">-</div>
+			<div class="c-button">1</div>
+			<div class="c-button">2</div>
+			<div class="c-button">3</div>
+			<div class="c-button">+</div>
+			<div class="c-button">.</div>
+			<div class="c-button">0</div>
+			<div class="c-button">00</div>
+			<div class="c-button">=</div>
+		</div>
+	</div>
+	<script>
+		var c_buttons = document.getElementsByClassName("c-button");
+		var b_panel = document.getElementById("button-panel");
+		var show = document.getElementById("show");
+		//FINISH is for ending a calculate. 0 mean not finish.
+		var FINISH = 0;
+		//事件绑定函数，兼容浏览器差异
+		function addEvent(element, event, listener) {
+		    if (element.addEventListener) {
+		        element.addEventListener(event, listener, false);
+		    }
+		    else if (element.attachEvent) {
+		        element.attachEvent("on" + event, listener);
+		    }
+		    else {
+		        element["on" + event] = listener;
+		    }
+		}
+		for (var i = 0; i < c_buttons.length; ++i) {
+			addEvent(c_buttons[i],"click",function(){
+			var text = this.innerText;
+			console.log(text);
+			if (FINISH == 1) {
+				if (/^\d*$/.test(text)){
+					show.innerText = "";
+				}
+				FINISH = 0;
+			}
+			for (var i = 0; i < c_buttons.length; ++i) {
+				c_buttons[i].style.borderColor = "#b2be7e";
+			}
+			this.style.borderColor = "orange";
+			if (/^\d*$/.test(text) || text == '+' || text == '-' || text == '*' || text == '/' || text == '%' || text == '.') {
+				if (show.innerText.length >= 20) {
+					alert("太长啦！");
+					return;
+				}
+				show.innerText += text;
+				return;
+			}
+			if (text == "AC") {
+				show.innerText = '';
+			}
+			if (text == "CE") {
+				show.innerText = show.innerText.substring(0,show.innerText.length-1);
+			}
+			if (text == "=") {
+				show.innerText = eval(show.innerText);
+				FINISH = 1;
+			}
+		});
+		}
+		
+
+
+	</script>
+</body>
+</html>
