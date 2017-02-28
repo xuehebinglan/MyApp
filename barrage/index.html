@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>barrage</title>
+    <script src="https://cdn.wilddog.com/sdk/js/2.5.2/wilddog-sync.js"></script>
+
+    <style>
+        * {
+            margin:0;
+            padding:0;
+        }
+        body{
+            background-color: pink;
+        }
+        #screen {
+            position:relative;
+            margin:50px auto 20px auto;
+            width: 600px;
+            height: 400px;
+            overflow:hidden;
+            background: white;
+        }
+        #control {
+            /*display:inline-block;*/
+            /*border:1px solid black;*/
+            margin:0 auto;
+            overflow:hidden;
+            width:400px;
+        }
+        .bullet {
+            position:absolute;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+<div id="screen">
+
+</div>
+<div id="control">
+    <input type="text" name="input" id="input">
+    <input type="submit" value="submit" id="submit">
+    <button id="clear">CLEAR</button>
+    <button id="start">START</button>
+    <button id="pause">PAUSE</button>
+</div>
+
+<script>
+
+    function Bullet(content, x, y, speed, size, color) {
+        this.content = content;
+        this.x = x;
+        this.y = y;
+        this.speed = speed;
+        this.size = size;
+        this.color = color;
+    }
+
+    function Screen(id) {
+
+        this.bullets = [];
+        this.timer = null;
+        this.interval = 10;
+        this.screen = document.getElementById(id);
+
+        this.biu = function (bullet) {
+            this.bullets.push(bullet);
+        };
+        this.clear = function () {
+            this.screen.innerHTML = "";
+            this.bullets = [];
+        };
+
+        this.start = function () {
+            if (this.timer != null) return;
+            var that = this;
+            that.timer = setInterval(function () {
+                that.display();
+                that.update();
+            }, that.interval);
+        };
+        this.display = function () {
+            this.screen.innerHTML = "";
+            var that = this;
+            var content = "";
+            for (var i = 0; i < that.bullets.length; ++ i) {
+                var bullet = that.bullets[i];
+                var elem = document.createElement('div');
+                elem.className = "bullet";
+                elem.style.color = bullet.color;
+                elem.style.fontSize = bullet.size + "px";
+                elem.style.top = bullet.y + "px";
+                elem.style.left = bullet.x + "px";
+                elem.innerText = bullet.content;
+                that.screen.appendChild(elem);
+            }
+        };
+        this.update = function () {
+            for (var i = 0; i < this.bullets.length; ++ i) {
+                this.bullets[i].x -= this.interval / 1000. * this.bullets[i].speed;
+                if (this.bullets[i].x + this.bullets[i].content.length * this.bullets[i].size < 0) this.bullets.splice(i, 1);
+            }
+        };
+        this.stop = function () {
+            if (this.timer != null) {
+                clearInterval(this.timer);
+                this.timer = null;
+            }
+        }
+    }
+
+
+
+
+    var config = {
+        syncURL: "https://danmu-xhbl.wilddogio.com" //输入节点 URL
+    };
+    wilddog.initializeApp(config);
+    var ref = wilddog.sync().ref();
+    ref = ref.child('user1');
+
+    var screen = new Screen('screen');
+    screen.start();
+
+
+
+
+
+
+    var input = document.getElementById("input");
+    var submit = document.getElementById("submit");
+    var clear = document.getElementById("clear");
+    var start = document.getElementById('start');
+    var pause = document.getElementById('pause');
+
+    submit.onclick = function () {
+        var content = input.value;
+        if (content.length <= 0) return;
+        ref.set({
+            'msg': content + "_" + Date.now(),
+        });
+    };
+
+    clear.onclick = function () {
+        screen.clear();
+    };
+
+    start.onclick = function () {
+        screen.start();
+    };
+
+    pause.onclick = function () {
+        screen.stop();
+    };
+
+    ref.on('value', function (s) {
+        var content = s.val()['msg'];
+        content = content.substr(0, content.lastIndexOf('_'));
+        screen.biu(
+                new Bullet(
+                        content,
+                        600,
+                        Math.random() * 300 + 50,
+                        100 * Math.random() + 100,
+                        parseInt(20 + 20 * Math.random()),
+                        'red'
+                ));
+    });
+
+
+
+</script>
+
+
+</body>
+
+</html>
