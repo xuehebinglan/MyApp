@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>tictactoe</title>
+	<style>
+		#tictactoe {
+			margin: 0 auto;
+			padding-left: 1px;
+			padding-top: 1px;
+			width: 498px;
+			height: 498px;
+
+			background-image: url(imgs/t-background.png);
+			background-size: 100% 100%;
+		}
+		.t-box {
+			float:left;
+			/*margin:1px;*/
+			width:166px;
+			height:166px;
+		}
+		.t-box:hover {
+			cursor:pointer;
+		}
+		#user {
+			width:400px;
+			height:55px;
+			margin:10px auto;
+			/*padding:10px;*/
+			
+			text-align: center;
+		}
+		.user {
+			/*float:left;*/
+			display: inline-block;
+			margin:5px;
+			width:100px;
+			height:50px;
+			border: 1px solid black;
+			line-height: 50px;
+		}
+		#user1 {
+			/*background-color:orange;*/
+		}
+		#user2 {
+			background-color:"";
+		}
+		.t-box {
+			text-align: center;
+			line-height: 167px;
+			font-size: 40px;
+		}
+		#restart {
+			width:100px;
+			height:50px;
+			color: #8c96a0;
+			text-shadow:1px 1px 1px #fff;
+			border:1px solid #dce1e6;
+			box-shadow: 0 1px 2px #fff inset,0 -1px 0 #a8abae inset;
+			background: -webkit-linear-gradient(top,#f2f3f7,#e4e8ec);
+			background: -moz-linear-gradient(top,#f2f3f7,#e4e8ec);
+			background: linear-gradient(top,#f2f3f7,#e4e8ec);
+		}
+	</style>
+</head>
+<body>
+	<div id="tictactoe">
+
+	</div>
+	<div id="user">
+		<div id="user1" class="user">user1(X)</div>
+		<div id="user2" class="user">user2(O)</div>
+		<button id="restart">restart</button>
+	</div>
+	<script src='js/tictactoe.js'></script>
+	<script>		
+
+		
+
+		var restart = document.getElementById("restart");
+		var user1 = document.getElementById("user1");
+		var user2 = document.getElementById("user2");
+		
+
+		var tictactoe = new Tictactoe('tictactoe');
+		tictactoe.changeColor(user1,"orange");
+		tictactoe.display();
+		for (var i = 0; i < tictactoe.boxes.length; ++i) {
+			addEvent(tictactoe.boxes[i],"click",function(idx){
+				return function(){
+					
+
+					if (this.innerText == "X" || this.innerText == "O")	return;
+					
+					tictactoe.playChess(idx);
+					tictactoe.changeTurn();
+					tictactoe.changeColor(user1,user2,"");
+					if (tictactoe.turn == 1) {
+						tictactoe.changeColor(user1,"orange");
+					}else {
+						tictactoe.changeColor(user2,"orange");
+					}
+					tictactoe.display();
+					if (tictactoe.whoIsWin() == 1) {
+						console.log("1 wins");
+						console.log("1 wins");
+						tictactoe.clearAll(2000);
+					}else if (tictactoe.whoIsWin() == 2) {
+						console.log("2 wins");
+						tictactoe.clearAll(2000);
+					}
+
+					if (tictactoe.pos_arr.indexOf(0) == -1) {
+						console.log("finished");
+						tictactoe.display();
+						return;
+					}					
+				}
+			}(i));
+			
+		}
+	
+		addEvent(restart,"click",function(){
+			tictactoe.clearAll(0);
+		});
+	</script>
+</body>
+</html>
