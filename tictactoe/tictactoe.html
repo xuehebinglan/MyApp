@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>tictactoe</title>
+	<style>
+		#tictactoe {
+			margin: 0 auto;
+			padding-left: 1px;
+			padding-top: 1px;
+			width: 498px;
+			height: 498px;
+
+			background-image: url(imgs/t-background.png);
+			background-size: 100% 100%;
+		}
+		.t-box {
+			float:left;
+			/*margin:1px;*/
+			width:166px;
+			height:166px;
+		}
+		.t-box:hover {
+			cursor:pointer;
+		}
+		#user {
+			width:400px;
+			height:55px;
+			margin:10px auto;
+			/*padding:10px;*/
+			
+			text-align: center;
+		}
+		.user {
+			/*float:left;*/
+			display: inline-block;
+			margin:5px;
+			width:100px;
+			height:50px;
+			border: 1px solid black;
+			line-height: 50px;
+		}
+		#user1 {
+			/*background-color:orange;*/
+		}
+		#user2 {
+			background-color:"";
+		}
+		.t-box {
+			text-align: center;
+			line-height: 167px;
+			font-size: 40px;
+		}
+		#restart {
+			width:100px;
+			height:50px;
+			color: #8c96a0;
+			text-shadow:1px 1px 1px #fff;
+			border:1px solid #dce1e6;
+			box-shadow: 0 1px 2px #fff inset,0 -1px 0 #a8abae inset;
+			background: -webkit-linear-gradient(top,#f2f3f7,#e4e8ec);
+			background: -moz-linear-gradient(top,#f2f3f7,#e4e8ec);
+			background: linear-gradient(top,#f2f3f7,#e4e8ec);
+		}
+	</style>
+</head>
+<body>
+	<div id="tictactoe">
+		<div class="t-box"></div>
+		<div class="t-box"></div>
+		<div class="t-box"></div>
+		<div class="t-box"></div>
+		<div class="t-box"></div>
+		<div class="t-box"></div>
+		<div class="t-box"></div>
+		<div class="t-box"></div>
+		<div class="t-box"></div>
+	</div>
+	<div id="user">
+		<div id="user1" class="user">user1</div>
+		<div id="user2" class="user">user2</div>
+		<button id="restart">restart</button>
+	</div>
+	<script>
+		//TURN为1是user1的步骤，2为user2的步骤
+		var TURN = 1;
+		//pos_arr代表9个位置当前的情况
+		var pos_arr = [0,0,0,0,0,0,0,0,0];
+
+		var boxes = document.getElementsByClassName("t-box");
+		var restart = document.getElementById("restart");
+		var user1 = document.getElementById("user1");
+		var user2 = document.getElementById("user2");
+		changeColor(user1,"orange");
+		//事件绑定函数，兼容浏览器差异
+		function addEvent(element, event, listener) {
+		    if (element.addEventListener) {
+		        element.addEventListener(event, listener, false);
+		    }
+		    else if (element.attachEvent) {
+		        element.attachEvent("on" + event, listener);
+		    }
+		    else {
+		        element["on" + event] = listener;
+		    }
+		}
+
+
+		//点一下
+		for (var i = 0; i < boxes.length; ++i) {
+			addEvent(boxes[i],"click",function(idx){
+				return function(){
+					if (this.innerText == "X" || this.innerText == "O") {
+//						console.log(pos_arr);
+						return;
+					}
+					if (TURN == 1) {					
+						this.innerText = "X";
+						pos_arr[idx] = TURN;
+						TURN = 2;
+						changeColor(user1,"");
+						changeColor(user2,"orange");
+					} else {
+						//innerText是异步的
+						this.innerText = "O";
+						pos_arr[idx] = TURN;
+						TURN = 1;
+						changeColor(user2,"");
+						changeColor(user1,"orange");
+					}
+					if (whoIsWin() == 1) {
+						console.log("1 wins");
+						clearAll();
+					}else if (whoIsWin() == 2) {
+						console.log("2 wins");
+						clearAll();
+					}
+
+					if (pos_arr.indexOf(0) == -1) {
+						console.log("finished");
+//						clearAll();
+						return;
+					}
+				}
+			}(i));
+		}
+		addEvent(restart,"click",function(){
+			clearAll();
+		});
+		function clearAll() {
+			setTimeout(function(){
+				for (var i = 0; i < boxes.length; ++i) {
+					boxes[i].innerText = "";
+					changeColor(boxes[i],"");
+					pos_arr = [0,0,0,0,0,0,0,0,0];
+				}
+
+			},1000);
+
+		}
+		function whoIsWin() {
+			if (isSame(pos_arr[0],pos_arr[1],pos_arr[2]) && pos_arr[0] != 0) {
+				changeColor(boxes[0],boxes[1],boxes[2],"orange");
+				return pos_arr[0];
+			}
+			if (isSame(pos_arr[0],pos_arr[3],pos_arr[6]) && pos_arr[0] != 0) {
+				changeColor(boxes[0],boxes[3],boxes[6],"orange");
+				return pos_arr[0];
+			}
+			if (isSame(pos_arr[0],pos_arr[4],pos_arr[8]) && pos_arr[0] != 0) {
+				changeColor(boxes[0],boxes[4],boxes[8],"orange");
+				return pos_arr[0];
+			}
+			if (isSame(pos_arr[4],pos_arr[1],pos_arr[7]) && pos_arr[4] != 0) {
+				changeColor(boxes[4],boxes[1],boxes[7],"orange");
+				return pos_arr[4];
+			}
+			if (isSame(pos_arr[4],pos_arr[2],pos_arr[6]) && pos_arr[4] != 0) {
+				changeColor(boxes[4],boxes[2],boxes[6],"orange");
+				return pos_arr[4];
+			}
+			if (isSame(pos_arr[4],pos_arr[3],pos_arr[5]) && pos_arr[4] != 0) {
+				changeColor(boxes[4],boxes[3],boxes[5],"orange");
+				return pos_arr[4];
+			}
+			if (isSame(pos_arr[8],pos_arr[2],pos_arr[5]) && pos_arr[8] != 0) {
+				changeColor(boxes[8],boxes[2],boxes[5],"orange");
+				return pos_arr[8];
+			}
+			if (isSame(pos_arr[8],pos_arr[6],pos_arr[7]) && pos_arr[8] != 0) {
+				changeColor(boxes[8],boxes[6],boxes[7],"orange");
+				return pos_arr[8];
+			}
+			return 0;
+//
+
+		}
+		function isSame(a,b,c) {
+			return (a == b) && (a == c);
+		}
+		function changeColor() {
+			var len = arguments.length;
+			for (var i = 0; i < len - 1; ++i) {
+				arguments[i].style.backgroundColor = arguments[len - 1];
+			}
+		}
+	</script>
+</body>
+</html>
