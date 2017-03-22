@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Little Fund By xjw</title>
+    <link rel="stylesheet" type="text/css" href="littlefund.css">
+    <link rel="stylesheet" href="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="littlefund">
+        <div class="create-fund">
+            <header>
+                <h1>创建基金,基金总数{{total_fund}}</h1>
+            </header>
+            <section>
+            </section>
+        </div>
+        <!-- 好吧，因为有很多重复的基金名字，导致我的title_id这个对应就很奇怪了，只有三个，实际上有很多，这个验证要怎么做呢 -->
+        <div class="show-fund">
+            <div class="fundlist">
+                <!-- <span>基金：</span> -->
+                <div class="fundbtn-panel">
+                    <button v-for="item in fund_data" :key="item.fund_id" :id="'button' + item.fund_id" class="fundbtn button--aylen button" @click="showFund"> {{item.title}} </button>
+                </div>
+                
+            </div>
+            <div class="fund-content-panel" v-if="fund_show.isShow">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>基金名</th>
+                            <th>总金额</th>
+                            <th>余额</th>
+                            <th>创建时间</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>{{fund_data[show_id].title}}</th>
+                            <th>{{fund_data[show_id].money}}</th>
+                            <th></th>
+                            <th>{{fund_data[show_id].create_at}}</th>
+                            <th>{{fund_data[show_id].detail}}</th>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- <div class="f-header">
+                    
+                    <div class="f-item">
+                        <span class="f-item">基金名:</span>
+                        <br><span>{{fund_data[fund_show.id].title}}</span>
+                    </div>
+                    <span class="f-item">总金额: {{fund_data[fund_show.id].money}}</span>
+                    <span class="f-item">创建时间: {{fund_data[fund_show.id].create_at}}</span>
+                    <span class="f-item">明细: {{fund_data[fund_show.id].detail}}</span>
+                </div> -->
+                <div class="f-expense">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>消费金额</th>
+                                <th>明细{{expense_data[1][0].title}}</th>
+                                <th>操作{{show_id}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="item in expense_data[show_id]">
+                                <tr>
+                                    <!-- <tr v-if="!!expense_data[fund_show.id].length" v-for="item in expense_data[fund_show[id]]"> -->
+                                    <td>a{{item.create_at}}</td>
+                                    <td>b{{item.money}}</td>
+                                    <td>c{{item.detail}}</td>
+                                    <td>d{{show_id}}</td>
+                                    <!-- <td>{{expense_data[fund_show.id].create_at}}</td>
+                                <td>{{expense_data[fund_show.id].money}}</td>                   
+                                <td>{{expense_data[fund_show.id].create_at}}</td>
+                                <td>{{expense_data[fund_show.id].create_at}}</td> -->
+                                </tr>
+                            </template>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- <div class="fund-mask-panel" v-if="fund_show.isShow">
+                <div class="fund-content-panel">
+                    <span class='fund-close' @click='fund_show.isShow = false'>X</span>
+                    <p>title: {{fund_data[fund_show.id].title}}</p>
+                    <p>money: {{fund_data[fund_show.id].money}}</p>
+                    <p>detail: {{fund_data[fund_show.id].detail}}</p>
+                    <p>create_at: {{fund_data[fund_show.id].create_at}}</p>
+                </div>
+            </div> -->
+            <!-- <div v-for="item in fund_data" :key="item.fund_id" class="fund-mask-panel" v-if="fund_data[item.fund_id].isSelected">
+            
+                <div class="fund-content-panel">
+                    <p>{{item.fund_id}}</p>
+                    <p>{{item.title}}</p>
+
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <script src="js/lib/vue2.js"></script>
+    <script src="js/lib/vue-resource.min.js"></script>
+    <script src="js/littlefund.js"></script>
+</body>
+
+</html>
