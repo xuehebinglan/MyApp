@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Little Fund By xjw</title>
+    <link rel="stylesheet" type="text/css" href="littlefund.css">
+    <link rel="stylesheet" href="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="littlefund">
+        <div class="fund-title">
+            <h1>基金总数:{{total_fund}}</h1>
+        </div>
+        <div class="show-fund">
+            <div class="fundlist">
+                <div class="fundbtn-panel">
+                    <button v-for="item in fund_data" :key="item.fund_id" :id="'button' + item.fund_id" class="fundbtn button--aylen button" @click="showFund"> {{item.title}} </button>
+                </div>
+                <button class="add-fund" @click="add_fund.isShow=true"><span class="    glyphicon glyphicon-plus"></span></button>
+                <div class="add-fund-mask" v-show="add_fund.isShow">
+                    <div class="add-fund-panel">
+                        <div class="add-fund-close" @click="add_fund.isShow=false">
+                            <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="add-exp-content">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>基金名</th>
+                                        <th>总金额</th>
+                                        <th>详情</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <input type="text" v-model="add_fund.title" class="add-fund-input">
+                                        </td>
+                                        <td>
+                                            <input type="text" v-model="add_fund.money" class="add-fund-input">
+                                        </td>
+                                        <td>
+                                            <input type="text" v-model="add_fund.detail" class="add-fund-input">
+                                        </td>
+                                        <td>
+                                            <button @click="addFund">提交</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fund-content-panel" v-if="fund_show.isShow">
+                <div class="fund-main">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>基金名</th>
+                                <th>总金额</th>
+                                <th>余额</th>
+                                <th>创建时间</th>
+                                <th>详情</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>{{fund_data[show_id].title}}</th>
+                                <th>{{fund_data[show_id].money}}</th>
+                                <th>{{left_money[show_id]}}</th>
+                                <th>{{fund_data[show_id].create_at}}</th>
+                                <th>{{fund_data[show_id].detail}}</th>
+                                <th>
+                                    <button @click='deleteFund'>删除</button>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="f-expense">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>名称</th>
+                                <th>消费金额</th>
+                                <th>明细</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template v-for="item in expense_data[show_id]">
+                                <tr>
+                                    <td>{{item.create_at}}</td>
+                                    <td>{{item.title}}</td>
+                                    <td>{{item.money}}</td>
+                                    <td>{{item.detail}}</td>
+                                    <td>
+                                        <button :id="'delete' + item.exp_id" @click="deleteExpense">删除</button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                    <button class="add-exp-btn" @click="add_expense.isShow=true">增加</button>
+                </div>
+            </div>
+            <div class="add-exp-mask" v-show="add_expense.isShow">
+                <div class="add-exp-panel">
+                    <div class="add-exp-close" @click="add_expense.isShow=false"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+                    <div class="add-exp-content">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>名称</th>
+                                    <th>消费金额</th>
+                                    <th>明细</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" v-model="add_expense.title" class="add-exp-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" v-model="add_expense.money" class="add-exp-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" v-model="add_expense.detail" class="add-exp-input">
+                                    </td>
+                                    <td>
+                                        <button @click="addExpense">提交</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/lib/vue2.js"></script>
+    <script src="js/lib/vue-resource.min.js"></script>
+    <script src="js/littlefund.js"></script>
+</body>
+
+</html>
