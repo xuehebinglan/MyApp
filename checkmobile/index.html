@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <title>lock for mobile</title>
+    <link rel="stylesheet" type="text/css" href="lockmobile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+</head>
+
+<body>
+    <button></button>
+    <div id="m-lockmobile"></div>
+    <script src="js/lockmobile.js"></script>
+    <script type="text/javascript">
+    var m_lockmobile = document.getElementById("m_lockmobile");
+    var lock = new LockMobile({
+        container: m_lockmobile
+    });
+    lock.init();
+    lock.on('unlockSuccess', function(){
+        console.log("用户设定：解锁成功啦！");
+    });
+    lock.on('setSuccess', function(){
+        console.log("用户设定：密码设置成功啦！");
+    });
+
+    </script>
+</body>
+
+</html>
