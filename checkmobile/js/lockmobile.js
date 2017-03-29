@@ -30,50 +30,52 @@ function resetClass(obj, classname) {
 }
 
 var emitter = {
-  // 注册事件
-  on: function(event, fn) {
-    var handles = this._handles || (this._handles = {}),
-      calls = handles[event] || (handles[event] = []);
+    // 注册事件
+    on: function(event, fn) {
+        var handles = this._handles || (this._handles = {}),
+            calls = handles[event] || (handles[event] = []);
 
-    // 找到对应名字的栈
-    calls.push(fn);
+        // 找到对应名字的栈
+        calls.push(fn);
 
-    return this;
-  },
-  // 解绑事件
-  off: function(event, fn) {
-    if(!event || !this._handles) this._handles = {};
-    if(!this._handles) return;
-
-    var handles = this._handles , calls;
-
-    if (calls = handles[event]) {
-      if (!fn) {
-        handles[event] = [];
         return this;
-      }
-      // 找到栈内对应listener 并移除
-      for (var i = 0, len = calls.length; i < len; i++) {
-        if (fn === calls[i]) {
-          calls.splice(i, 1);
-          return this;
-        }
-      }
-    }
-    return this;
-  },
-  // 触发事件
-  emit: function(event){
-    var args = [].slice.call(arguments, 1),
-      handles = this._handles, calls;
+    },
+    // 解绑事件
+    off: function(event, fn) {
+        if (!event || !this._handles) this._handles = {};
+        if (!this._handles) return;
 
-    if (!handles || !(calls = handles[event])) return this;
-    // 触发所有对应名字的listeners
-    for (var i = 0, len = calls.length; i < len; i++) {
-      calls[i].apply(this, args)
+        var handles = this._handles,
+            calls;
+
+        if (calls = handles[event]) {
+            if (!fn) {
+                handles[event] = [];
+                return this;
+            }
+            // 找到栈内对应listener 并移除
+            for (var i = 0, len = calls.length; i < len; i++) {
+                if (fn === calls[i]) {
+                    calls.splice(i, 1);
+                    return this;
+                }
+            }
+        }
+        return this;
+    },
+    // 触发事件
+    emit: function(event) {
+        var args = [].slice.call(arguments, 1),
+            handles = this._handles,
+            calls;
+
+        if (!handles || !(calls = handles[event])) return this;
+        // 触发所有对应名字的listeners
+        for (var i = 0, len = calls.length; i < len; i++) {
+            calls[i].apply(this, args)
+        }
+        return this;
     }
-    return this;
-  }
 }
 
 //html
@@ -150,7 +152,10 @@ function LockMobile(options) {
     this.offsetleft = this.canvas.offsetLeft;
     //圆心point
     this.point = [];
-    this.mouse_stat = 0; //0代表没有，1代表点了,用于解决电脑端没有mousedown就move的问题
+    //0代表没有，1代表点了,用于解决电脑端没有mousedown就move的问题
+    this.mouse_stat = 0;
+    // ableChange为1代表可以改变页面，0代表不能，用于显示密码清空密码等操作不可使用页面输入密码
+    this.ableChange = 1;
     //status: 0为空， 1设置密码第一次，2设置密码第一次,3表示验证密码,4为显示密码
     //status跟path_obj相关
     this.status = 1;
@@ -236,6 +241,7 @@ extend(LockMobile.prototype, {
     bindEvt: function() { //所有事件绑定
         var that = this;
         this.canvas.addEventListener(this.startEvt, function(e) {
+            if (that.ableChange == 0) return;
             console.log("start");
             e.preventDefault();
             that.uppdateCan(that.path_obj[0]);
@@ -245,6 +251,7 @@ extend(LockMobile.prototype, {
             resetClass(that.reminder, that.reminderClass);
         });
         this.canvas.addEventListener(this.moveEvt, function(e) {
+            if (that.ableChange == 0) return;
             console.log("move");
             if (that.mouse_stat == 1) {
                 e.preventDefault();
@@ -254,6 +261,7 @@ extend(LockMobile.prototype, {
             }
         });
         this.canvas.addEventListener(this.endEvt, function(e) {
+            if (that.ableChange == 0) return;
             console.log("end");
             that.uppdateCan();
             that.mouse_stat = 0;
@@ -316,14 +324,18 @@ extend(LockMobile.prototype, {
                 return function() {
                     if (that.stat[0].checked) {
                         that.status = 1;
+                        that.ableChange = 1;
                     } else if (that.stat[1].checked) {
                         that._clearPath(that.path_obj[1], that.path_obj[2]);
                         that.status = 3;
+                        that.ableChange = 1;
                     } else if (that.stat[2].checked) {
                         that.uppdateCan(lockStorage.fetch());
+                        that.ableChange = 0;
                         return;
                     } else if (that.stat[3].checked) {
                         lockStorage.save(that.path_obj[0]);
+                        that.ableChange = 0;
                     }
                     that.uppdateCan();
                 }
@@ -418,7 +430,7 @@ extend(LockMobile.prototype, {
     },
 
     //实时更改path_obj里面的内容，同时refesh来改变。
-    _showOntime: function(x, y) { 
+    _showOntime: function(x, y) {
 
         var inArc = this._checkRange(x, y);
         if (inArc == -1) return;
