@@ -1,5 +1,8 @@
 # 基于canvas兼容移动端和pc端的手势密码组件
 
+> demo: 
+> www.xuehebinglan.com/demo/checkmobile
+
 ## 任务需求
 在移动端设备上，“手势密码”成为一个很常用的 UI 组件。
 
