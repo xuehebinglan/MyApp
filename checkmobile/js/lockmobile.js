@@ -125,12 +125,7 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(password));
         }
     };
-
-
-
-
-
-
+    
 
     //构造函数
     window.LockMobile = function(options) {
